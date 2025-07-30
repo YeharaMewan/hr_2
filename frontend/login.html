@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="si">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - HR Agent</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --container-bg: #1e1e1e;
+            --text-color: #ececf1;
+            --placeholder-color: #8e8ea0;
+            --border-color: #3a3a3f;
+            --button-bg: #6D28D9;
+            --button-hover-bg: #7C3AED;
+            --button-disabled-bg: #4a5568;
+            --chip-bg: #3a3a3f;
+            --chip-hover-bg: #4a4a4f;
+            --error-color: #ef4444;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+        }
+
+        /* Universal Box Sizing for easier layout management */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100%;
+            /* Use min-height to handle content overflow */
+            margin: 0;
+            padding: 1rem;
+            /* Add padding to the body for small screens */
+        }
+
+        .login-container {
+            background-color: var(--container-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            position: relative;
+        }
+
+        .title-block {
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            /* Adjusted for better scaling */
+            max-width: 180px;
+            width: 100%;
+            height: auto;
+            /* Maintain aspect ratio */
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--placeholder-color);
+            margin: 0;
+            /* Removed default margin */
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--placeholder-color);
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--button-bg);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
+        }
+
+        input::placeholder {
+            color: var(--placeholder-color);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 1rem;
+            position: relative;
+        }
+
+        .login-button:hover:not(:disabled) {
+            background-color: var(--button-hover-bg);
+        }
+
+        .login-button:disabled {
+            background-color: var(--button-disabled-bg);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .login-button .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        .login-button.loading .spinner {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .message {
+            margin-top: 1rem;
+            min-height: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .error-message {
+            color: white;
+            background-color: var(--error-color);
+        }
+
+        .success-message {
+            color: white;
+            background-color: var(--success-color);
+        }
+
+        .warning-message {
+            color: white;
+            background-color: var(--warning-color);
+        }
+
+        .quick-login-container {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .quick-login-title {
+            font-size: 0.8rem;
+            color: var(--placeholder-color);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .quick-login-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            /* Allow buttons to wrap on small screens */
+        }
+
+        .quick-login-btn {
+            padding: 8px 16px;
+            background: var(--chip-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .quick-login-btn:hover {
+            background-color: var(--chip-hover-bg);
+        }
+
+        .quick-login-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .connection-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--error-color);
+            transition: background-color 0.3s;
+        }
+
+        .connection-status.connected {
+            background-color: var(--success-color);
+        }
+
+        .connection-status.connecting {
+            background-color: var(--warning-color);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* --- Responsive Design --- */
+        /* Styles for mobile devices (screens smaller than 600px) */
+        @media (max-width: 600px) {
+            body {
+                /* Align container to the top on mobile for better UX */
+                align-items: flex-start;
+                padding: 1rem;
+            }
+
+            .login-container {
+                /* Reduce padding on mobile to give more space to content */
+                padding: 2rem 1.5rem;
+                /* Remove border and shadow on mobile for a cleaner, full-width feel */
+                border: none;
+                box-shadow: none;
+            }
+
+            .logo {
+                max-width: 150px;
+                /* Make logo slightly smaller on mobile */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="connection-status" id="connectionStatus" title="Server Connection"></div>
+
+        <div class="title-block">
+            <img src="/frontend/RiseHRLogo.png" alt="RiseHR Logo" class="logo" />
+            <p class="subtitle">Agentic HR Solution (Preview)</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="employee_id">Employee ID</label>
+                <input type="text" id="employee_id" name="employee_id" required placeholder="e.g., E001"
+                    autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password"
+                    autocomplete="current-password">
+            </div>
+            <button type="submit" class="login-button" id="loginButton">
+                <span class="spinner"></span>
+                <span class="button-text">Login</span>
+            </button>
+        </form>
+
+        <div id="messageContainer" class="message"></div>
+
+        <div class="quick-login-container">
+            <p class="quick-login-title">Quick Login (for Testing)</p>
+            <div class="quick-login-buttons">
+                <button class="quick-login-btn" onclick="fillCredentials('E001')">HR (E001)</button>
+                <button class="quick-login-btn" onclick="fillCredentials('E002')">HR (E002)</button>
+                <button class="quick-login-btn" onclick="fillCredentials('E003')">Emp (E003)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE = window.location.origin;
+        const ENDPOINTS = {
+            LOGIN: '/api/auth/login',
+            HEALTH: '/api/health'
+        };
+
+        // DOM Elements
+        const employeeIdInput = document.getElementById('employee_id');
+        const passwordInput = document.getElementById('password');
+        const loginForm = document.getElementById('loginForm');
+        const loginButton = document.getElementById('loginButton');
+        const buttonText = loginButton.querySelector('.button-text');
+        const messageContainer = document.getElementById('messageContainer');
+        const connectionStatus = document.getElementById('connectionStatus');
+
+        // State
+        let isConnected = false;
+        let isLoggingIn = false;
+
+        // Utility Functions
+        function showMessage(message, type = 'error') {
+            messageContainer.textContent = message;
+            messageContainer.className = `message ${type}-message`;
+
+            // Auto-hide success messages
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageContainer.textContent = '';
+                    messageContainer.className = 'message';
+                }, 3000);
+            }
+        }
+
+        function clearMessage() {
+            messageContainer.textContent = '';
+            messageContainer.className = 'message';
+        }
+
+        function setLoading(loading) {
+            isLoggingIn = loading;
+            loginButton.disabled = loading;
+
+            if (loading) {
+                loginButton.classList.add('loading');
+                buttonText.textContent = 'Logging in...';
+            } else {
+                loginButton.classList.remove('loading');
+                buttonText.textContent = 'Login';
+            }
+
+            // Disable quick login buttons during login
+            const quickButtons = document.querySelectorAll('.quick-login-btn');
+            quickButtons.forEach(btn => btn.disabled = loading);
+        }
+
+        function updateConnectionStatus(connected) {
+            isConnected = connected;
+            connectionStatus.className = `connection-status ${connected ? 'connected' : 'disconnected'}`;
+            connectionStatus.title = connected ? 'Connected to server' : 'Server connection failed';
+        }
+
+        // Check if user is already logged in
+        function checkExistingLogin() {
+            const token = localStorage.getItem('jwt_token');
+
+            if (token) {
+                try {
+                    // Check if token is valid
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    const currentTime = Date.now() / 1000;
+
+                    if (payload.exp > currentTime) {
+                        console.log('Valid token found, redirecting to main app');
+                        showMessage('Already logged in, redirecting...', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/frontend/';
+                        }, 1000);
+                        return true;
+                    } else {
+                        console.log('Token expired, removing');
+                        localStorage.removeItem('jwt_token');
+                    }
+                } catch (error) {
+                    console.error('Token validation error:', error);
+                    localStorage.removeItem('jwt_token');
+                }
+            }
+            return false;
+        }
+
+        // Server health check
+        async function checkServerHealth() {
+            try {
+                connectionStatus.className = 'connection-status connecting';
+
+                const response = await fetch(`${API_BASE}${ENDPOINTS.HEALTH}`, {
+                    method: 'GET',
+                    timeout: 5000
+                });
+
+                if (response.ok) {
+                    const healthData = await response.json();
+                    console.log('Server health:', healthData);
+                    updateConnectionStatus(true);
+                    return true;
+                } else {
+                    throw new Error(`Server responded with status: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Health check failed:', error);
+                updateConnectionStatus(false);
+                showMessage('Cannot connect to server. Please check your connection.', 'warning');
+                return false;
+            }
+        }
+
+        // Login function
+        async function performLogin(employeeId, password) {
+            if (!isConnected) {
+                showMessage('Not connected to server. Please wait and try again.', 'error');
+                return false;
+            }
+
+            setLoading(true);
+            clearMessage();
+
+            try {
+                console.log('Attempting login for:', employeeId);
+
+                const response = await fetch(`${API_BASE}${ENDPOINTS.LOGIN}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: employeeId, // Backend expects 'username' field
+                        password: password,
+                    }),
+                });
+
+                const data = await response.json();
+                console.log('Login response:', data);
+
+                if (response.ok && data.success) {
+                    // Store the JWT token
+                    localStorage.setItem('jwt_token', data.access_token);
+
+                    // Show success message
+                    const userName = data.user ? data.user.user_name : employeeId;
+                    showMessage(`Welcome ${userName}! Redirecting...`, 'success');
+
+                    console.log('Login successful, redirecting to main app');
+
+                    // Redirect to main application
+                    setTimeout(() => {
+                        window.location.href = '/frontend/';
+                    }, 1500);
+
+                    return true;
+                } else {
+                    // Handle login failure
+                    const errorMessage = data.message || 'Login failed. Please check your credentials.';
+                    showMessage(errorMessage, 'error');
+                    console.error('Login failed:', errorMessage);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    showMessage('Connection error. Please check your internet connection.', 'error');
+                    updateConnectionStatus(false);
+                } else {
+                    showMessage('An error occurred during login. Please try again.', 'error');
+                }
+                return false;
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        // Quick login function
+        function fillCredentials(employeeId) {
+            if (isLoggingIn) return;
+
+            employeeIdInput.value = employeeId;
+            passwordInput.value = 'pw123'; // Default password from backend
+
+            // Clear any existing messages
+            clearMessage();
+
+            // Focus on password field for immediate login if needed
+            passwordInput.focus();
+        }
+
+        // Event Listeners
+        loginForm.addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const employeeId = employeeIdInput.value.trim();
+            const password = passwordInput.value;
+
+            // Validation
+            if (!employeeId) {
+                showMessage('Please enter your Employee ID.', 'error');
+                employeeIdInput.focus();
+                return;
+            }
+
+            if (!password) {
+                showMessage('Please enter your password.', 'error');
+                passwordInput.focus();
+                return;
+            }
+
+            // Attempt login
+            await performLogin(employeeId, password);
+        });
+
+        // Real-time validation
+        employeeIdInput.addEventListener('input', clearMessage);
+        passwordInput.addEventListener('input', clearMessage);
+
+        // Enter key handling for quick login
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter' && !isLoggingIn) {
+                const activeElement = document.activeElement;
+                if (activeElement.classList.contains('quick-login-btn')) {
+                    activeElement.click();
+                }
+            }
+        });
+
+        // Periodic health check
+        function startHealthMonitoring() {
+            // Initial health check
+            checkServerHealth();
+
+            // Periodic health checks every 30 seconds
+            setInterval(async () => {
+                if (!isConnected) {
+                    await checkServerHealth();
+                }
+            }, 30000);
+        }
+
+        // Network status monitoring
+        window.addEventListener('online', () => {
+            console.log('Network connection restored');
+            checkServerHealth();
+        });
+
+        window.addEventListener('offline', () => {
+            console.log('Network connection lost');
+            updateConnectionStatus(false);
+            showMessage('Network connection lost. Please check your internet connection.', 'warning');
+        });
+
+        // Error handling
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('Unhandled promise rejection:', event.reason);
+            event.preventDefault();
+
+            if (!event.reason.message || !event.reason.message.includes('fetch')) {
+                showMessage('An unexpected error occurred. Please refresh the page.', 'error');
+            }
+        });
+
+        // Initialize application
+        function initializeApp() {
+            console.log('🚀 Initializing Login Application...');
+
+            // Check if user is already logged in
+            if (checkExistingLogin()) {
+                return;
+            }
+
+            // Start server health monitoring
+            startHealthMonitoring();
+
+            // Focus on employee ID input
+            employeeIdInput.focus();
+
+            console.log('✅ Login application initialized successfully');
+        }
+
+        // Auto-retry connection
+        function retryConnection() {
+            let retryCount = 0;
+            const maxRetries = 3;
+
+            const retry = async () => {
+                if (retryCount < maxRetries && !isConnected) {
+                    retryCount++;
+                    console.log(`Retrying connection... (${retryCount}/${maxRetries})`);
+
+                    connectionStatus.className = 'connection-status connecting';
+                    await checkServerHealth();
+
+                    if (!isConnected) {
+                        setTimeout(retry, 2000 * retryCount); // Exponential backoff
+                    }
+                }
+            };
+
+            return retry;
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
+
+        // Auto-retry connection on page visibility change
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && !isConnected) {
+                console.log('Page became visible, checking connection');
+                checkServerHealth();
+            }
+        });
+
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', (event) => {
+            // Prevent going back if we're in the middle of login
+            if (isLoggingIn) {
+                event.preventDefault();
+                history.pushState(null, null, window.location.href);
+            }
+        });
+
+        // Push initial state for back button handling
+        history.pushState(null, null, window.location.href);
+
+        // Expose some functions globally for debugging
+        window.LoginApp = {
+            checkServerHealth,
+            performLogin,
+            isConnected: () => isConnected,
+            isLoggingIn: () => isLoggingIn,
+            retryConnection: retryConnection()
+        };
+    </script>
+</body>
+
+</html>
